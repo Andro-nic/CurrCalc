@@ -10,9 +10,7 @@ class APIException(Exception):
 class CurrencyConverter:
     @staticmethod
     def get_price(quote: str, base: str, amount: str):
-        if base == quote:
-            raise APIException('Невозможно перевести валюту саму в себя')
-
+        # обрабатываем возможные ошибки
         try:
             base_val = keys[base]
         except KeyError:
@@ -23,11 +21,14 @@ class CurrencyConverter:
         except KeyError:
             raise APIException(f'Проверьте правильность ввода валюты: {quote}')
 
+        if base == quote:
+            raise APIException('Невозможно перевести валюту саму в себя')
+
         try:
             amount = float(amount)
         except ValueError:
             raise APIException(f'Сумма конвертации <{amount}> имеет не числовое значение')
-
+        # подгружаем API
         r = requests.get(f'https://min-api.cryptocompare.com/data/price?fsym={base_val}&tsyms={quote_val}')
         quote_num = json.loads(r.content)[quote_val]
         return quote_num

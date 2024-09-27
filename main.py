@@ -40,18 +40,22 @@ def handle_text(message):
         bot.send_message(message.chat.id, answer)
     #Обрабатываем запрос на конвертацию
     else:
+        # отлавливаем ошибки
         try:
             elements = message.text.split(' ')
             if len(elements) != 3:
                 raise APIException('Количество введенных параметров не равно 3')
             quote, base, amount = elements
             quote, base = quote.lower(), base.lower()
+            # вызываем медот get_price класса CurrencyConverter
             conv_num = CurrencyConverter.get_price(quote, base.lower(), amount)
         except APIException as e:
             bot.reply_to(message, f'Ошибка пользователя\n{e}')
         except Exception as e:
             bot.reply_to(message,f'Не удалось обработать команду\n{e}')
         else:
+            # производим расчет стоимости и округляем полученный результат
+            # оставляя не округленными очень малые значения
             number = float(conv_num) * float(amount)
             if number > 0.004:
                 total = Decimal(number)
