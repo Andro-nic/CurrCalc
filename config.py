@@ -1,4 +1,4 @@
-TOKEN = '7765037662:AAHgczGA1l3SkHpM9soIc18OXt_qvM9HwcE'
+TOKEN = '11'
 
 
 keys = {
